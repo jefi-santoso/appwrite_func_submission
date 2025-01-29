@@ -6,7 +6,8 @@ export default async ({ req, res, log, error }) => {
   const client = new Client()
     .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
     .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
-    .setKey(req.headers['x-appwrite-key'] ?? '');
+    .setKey(process.env.APPWRITE_API_KEY ?? req.headers['x-appwrite-key']);
+    // .setKey(req.headers['x-appwrite-key'] ?? '');
   const db = new Databases(client);
 
   try {
@@ -31,7 +32,7 @@ export default async ({ req, res, log, error }) => {
     });
     log(submissionHistoryDoc);
   } catch(err) {
-    error(`Error occurred: ${err.message}`);
+    error(`Error occurred: ${JSON.stringify(err)}`);
   }
 
   return res.json(submissionHistoryDoc);
