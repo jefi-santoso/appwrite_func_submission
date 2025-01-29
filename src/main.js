@@ -1,4 +1,4 @@
-import { Client, Users } from 'node-appwrite';
+import { Client, Databases } from 'node-appwrite';
 
 // This Appwrite function will be executed every time submission's status change to insert record in submission history table
 export default async ({ req, res, log, error }) => {
@@ -7,32 +7,25 @@ export default async ({ req, res, log, error }) => {
     .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
     .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID)
     .setKey(req.headers['x-appwrite-key'] ?? '');
-  const users = new Users(client);
+  const db = new Databases(client);
 
   try {
-    const response = await users.list();
-    // Log messages and errors to the Appwrite Console
-    // These logs won't be seen by your end users
-    log(`Total users: ${response.total}`);
-    log(process.env.APPWRITE_FUNCTION_EVENT_DATA);
-    if(req.body.$databaseId === "ces-cds-db") {
-      log(`Total users: ${req.body.$collectionId}`);
-    }
+    const body = req.body;
+    log(`Database ID: ${req.body.$databaseId}`);
+    log(`Collection ID: ${req.body.$collectionId}`);
+    const submissionDoc = await db.getDocument(body.$databaseId, body.$collectionId, body.$id);
+    const submissionHistoryDoc = await db.createDocument(body.$databaseId, body.$collectionId, ID.unique(),
+    {
+      changed_by_username: 'Spiderman',
+      previous_status: body.status,
+      next_status: submissionDoc.status,
+      changed_at: body.$updatedAt,
+      submission: body.$id,
+    });
+    log(submissionHistoryDoc);
   } catch(err) {
     error(`Error occurred: ${err.message}`);
   }
 
-  // The req object contains the request data
-  if (req.path === "/ping") {
-    // Use res object to respond with text(), json(), or binary()
-    // Don't forget to return a response!
-    return res.text("Pong");
-  }
-
-  return res.json({
-    motto: "Build like a team of hundreds_",
-    learn: "https://appwrite.io/docs",
-    connect: "https://appwrite.io/discord",
-    getInspired: "https://builtwith.appwrite.io",
-  });
+  return res.json(submissionHistoryDoc);
 };
