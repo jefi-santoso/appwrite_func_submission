@@ -11,12 +11,15 @@ export default async ({ req, res, log, error }) => {
 
   try {
     const body = req.body;
+    log(`Body: ${JSON.stringify(body)}`);
     log(`Database ID: ${body.$databaseId}`);
     log(`Collection ID: ${body.$collectionId}`);
     log(`Document ID: ${body.$id}`);
     const submissionDoc = await db.getDocument(body.$databaseId, body.$collectionId, body.$id);
     log(`Submission: ${JSON.stringify(submissionDoc)}`);
-    const submissionHistoryDoc = await db.createDocument(body.$databaseId, body.$collectionId, ID.unique(),
+    const newId = ID.unique();
+    log(`newId: ${newId}`);
+    const submissionHistoryDoc = await db.createDocument(body.$databaseId, body.$collectionId, newId,
     {
       changed_by_username: 'jsantoso',
       previous_status: body.status,
