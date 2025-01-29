@@ -8,6 +8,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "appwrite": "^17.0.0",
     "node-appwrite": "^14.2.0"
   },
   "devDependencies": {
