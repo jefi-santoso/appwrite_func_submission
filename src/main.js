@@ -15,8 +15,10 @@ export default async ({ req, res, log, error }) => {
     log(`Database ID: ${body.$databaseId}`);
     log(`Collection ID: ${body.$collectionId}`);
     log(`Document ID: ${body.$id}`);
-    const submissionDoc = await db.getDocument(body.$databaseId, body.$collectionId, body.$id);
-    log(`Submission: ${JSON.stringify(submissionDoc)}`);
+    const prevSubmissionHistoryDoc = await db.listDocuments(body.$databaseId, body.Submission_History, [
+      Query.equal('submission', body.$id).orderDesc("attribute")
+    ]);
+    log(`Previous Submission: ${JSON.stringify(prevSubmissionHistoryDoc)}`);
     const newId = ID.unique();
     log(`newId: ${newId}`);
     const submissionHistoryDoc = await db.createDocument(body.$databaseId, body.$collectionId, newId,
@@ -25,7 +27,7 @@ export default async ({ req, res, log, error }) => {
       previous_status: body.status,
       next_status: submissionDoc.status,
       changed_at: body.$updatedAt,
-      submission: body.$id,
+      submission: body,
     });
     log(submissionHistoryDoc);
   } catch(err) {
