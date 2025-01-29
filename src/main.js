@@ -1,4 +1,5 @@
-import { Client, Users } from 'appwrite';
+import { Client } from 'appwrite';
+import { Users } from 'node-appwrite';
 
 // This Appwrite function will be executed every time submission's status change to insert record in submission history table
 export default async ({ req, res, log, error }) => {
