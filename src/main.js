@@ -15,7 +15,7 @@ export default async ({ req, res, log, error }) => {
     log(`Database ID: ${body.$databaseId}`);
     log(`Collection ID: ${body.$collectionId}`);
     log(`Document ID: ${body.$id}`);
-    const prevSubmissionHistoryDoc = await db.listDocuments(body.$databaseId, body.Submission_History, [
+    const prevSubmissionHistoryDoc = await db.listDocuments(body.$databaseId, 'Submission_History', [
       Query.equal('submission', body.$id),
       Query.orderDesc("$updatedAt")
     ]);
