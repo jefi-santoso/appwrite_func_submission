@@ -1,12 +1,7 @@
-import { Client as Server } from 'appwrite';
 import { Client, Users } from 'node-appwrite';
 
 // This Appwrite function will be executed every time submission's status change to insert record in submission history table
 export default async ({ req, res, log, error }) => {
-
-  const server = new Server()
-    .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
-    .setProject(process.env.APPWRITE_FUNCTION_PROJECT_ID);
 
   const client = new Client()
     .setEndpoint(process.env.APPWRITE_FUNCTION_API_ENDPOINT)
@@ -19,14 +14,11 @@ export default async ({ req, res, log, error }) => {
     // Log messages and errors to the Appwrite Console
     // These logs won't be seen by your end users
     log(`Total users: ${response.total}`);
-
-    server.subscribe(['collections.Submission.*.status'], response => {
-      // Callback will be executed on changes for Submission's status
-        console.log(response);
-    });
+    log(process.env.APPWRITE_FUNCTION_EVENT_DATA);
+    log(req);
 
   } catch(err) {
-    error(`Could not list users: ${err.message}`);
+    error(`Error occurred: ${err.message}`);
   }
 
   // The req object contains the request data
