@@ -15,8 +15,9 @@ export default async ({ req, res, log, error }) => {
     // These logs won't be seen by your end users
     log(`Total users: ${response.total}`);
     log(process.env.APPWRITE_FUNCTION_EVENT_DATA);
-    log(req);
-
+    if(req.body.$databaseId === "ces-cds-db") {
+      log(`Total users: ${req.body.$collectionId}`);
+    }
   } catch(err) {
     error(`Error occurred: ${err.message}`);
   }
