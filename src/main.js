@@ -1,4 +1,4 @@
-import { Client, Databases, Query } from 'node-appwrite';
+import { Client, Databases, Query, ID } from 'node-appwrite';
 
 // This Appwrite function will be executed every time submission's status change to insert record in submission history table
 export default async ({ req, res, log, error }) => {
@@ -11,21 +11,20 @@ export default async ({ req, res, log, error }) => {
 
   try {
     const body = req.body;
+    const submissionHistoryCollectionId = 'Submission_History';
     log(`Body: ${JSON.stringify(body)}`);
     log(`Database ID: ${body.$databaseId}`);
     log(`Collection ID: ${body.$collectionId}`);
     log(`Document ID: ${body.$id}`);
-    const prevSubmissionHistoryDoc = await db.listDocuments(body.$databaseId, 'Submission_History', [
+    const prevSubmissionHistoryDoc = await db.listDocuments(body.$databaseId, submissionHistoryCollectionId, [
       Query.equal('submission', body.$id),
       Query.orderDesc("$updatedAt")
     ]);
     log(`Previous Submission: ${JSON.stringify(prevSubmissionHistoryDoc)}`);
-    const newId = ID.unique();
-    log(`newId: ${newId}`);
-    const submissionHistoryDoc = await db.createDocument(body.$databaseId, body.$collectionId, newId,
+    const submissionHistoryDoc = await db.createDocument(body.$databaseId, submissionHistoryCollectionId, ID.unique(),
     {
       changed_by_username: 'jsantoso',
-      previous_status: body.status,
+      previous_status: prevSubmissionHistoryDoc.documents[0].next_status,
       next_status: submissionDoc.status,
       changed_at: body.$updatedAt,
       submission: body,
