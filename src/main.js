@@ -11,6 +11,7 @@ export default async ({ req, res, log, error }) => {
   const db = new Databases(client);
 
   try {
+    log(client);
     log(req);
     const body = req.body;
     const submissionHistoryCollectionId = 'Submission_History';
