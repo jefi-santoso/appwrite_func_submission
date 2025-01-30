@@ -31,10 +31,10 @@ export default async ({ req, res, log, error }) => {
     const submissionHistoryDoc = await db.createDocument(body.$databaseId, submissionHistoryCollectionId, ID.unique(),
     {
       changed_by_username: 'jsantoso',
-      previous_status: 'prevSubmissionHistoryDoc.documents[0].new_status',
+      previous_status: prevSubmissionHistoryDoc.documents[0].new_status,
       new_status: body.status,
       changed_at: body.$updatedAt,
-      submission: [`'${body.$id}'`],
+      submission: [`${body.$id}`],
     });
     log(submissionHistoryDoc);
   } catch(err) {
