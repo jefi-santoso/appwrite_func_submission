@@ -24,7 +24,8 @@ export default async ({ req, res, log, error }) => {
    
     const newDoc = await db.createDocument(body.$databaseId, collectionId, ID.unique(),
     {
-      name: 'jsantoso'
+      name: 'jsantoso',
+      table1: body
     });
     log(newDoc);
   } catch(err) {
