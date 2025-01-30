@@ -35,10 +35,7 @@ export default async ({ req, res, log, error }) => {
       next_status: body.status,
       changed_at: body.$updatedAt,
       submission: {
-        $id: body.$id,
-        status: body.status,
-        submission_period_start_date: body.submission_period_start_date,
-        submission_period_end_date: body.submission_period_end_date
+        $id: body.$id
       },
     });
     log(submissionHistoryDoc);
