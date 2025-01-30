@@ -34,7 +34,7 @@ export default async ({ req, res, log, error }) => {
       previous_status: prevSubmissionHistoryDoc.documents[0].new_status,
       new_status: body.status,
       changed_at: body.$updatedAt,
-      submission: [`${body.$id}`],
+      submission: `${body.$id}`,
     });
     log(submissionHistoryDoc);
   } catch(err) {
