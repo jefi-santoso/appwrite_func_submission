@@ -1,4 +1,4 @@
-import { Client, Databases, ID } from 'node-appwrite';
+import { Client, Databases, Query, ID } from 'node-appwrite';
 
 // This Appwrite function will be executed every time submission's status change to insert record in submission history table
 export default async ({ req, res, log, error }) => {
@@ -15,19 +15,28 @@ export default async ({ req, res, log, error }) => {
     log(req);
 
     const body = req.body;
-    const collectionId = '679b015b0006b45bc3a7';
+    const submissionHistoryCollectionId = 'Submission_History';
     log(`Body: ${JSON.stringify(body)}`);
     log(`Database ID: ${body.$databaseId}`);
     log(`Collection ID: ${body.$collectionId}`);
     log(`Document ID: ${body.$id}`);
 
-   
-    const newDoc = await db.createDocument(body.$databaseId, collectionId, ID.unique(),
+    const prevSubmissionHistoryDoc = await db.listDocuments(body.$databaseId, submissionHistoryCollectionId, [
+      Query.equal('submission', body.$id),
+      Query.orderDesc("$updatedAt")
+    ]);
+    log(`Previous Submission: ${JSON.stringify(prevSubmissionHistoryDoc)}`);
+
+    log(`New Status: ${prevSubmissionHistoryDoc.documents[0].new_status}`);
+    const submissionHistoryDoc = await db.createDocument(body.$databaseId, submissionHistoryCollectionId, ID.unique(),
     {
-      name: 'jsantoso',
-      table1: body.$id
+      changed_by_username: 'jsantoso',
+      previous_status: prevSubmissionHistoryDoc.documents[0].new_status,
+      next_status: body.status,
+      changed_at: body.$updatedAt,
+      submission: body.$id,
     });
-    log(newDoc);
+    log(submissionHistoryDoc);
   } catch(err) {
     error(`Error occurred: ${JSON.stringify(err)}`);
   }
