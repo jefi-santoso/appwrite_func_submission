@@ -32,7 +32,7 @@ export default async ({ req, res, log, error }) => {
     {
       changed_by_username: 'jsantoso',
       previous_status: 'Pending',
-      next_status: 'Information_Required',
+      new_status: 'Information_Required',
       changed_at: '2025-01-29T09:48:41.050+00:00',
       submission: '6799f978003c53a2fff0',
     });
