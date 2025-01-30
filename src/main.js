@@ -37,5 +37,5 @@ export default async ({ req, res, log, error }) => {
     error(`Error occurred: ${JSON.stringify(err)}`);
   }
 
-  return res.json(submissionHistoryDoc);
+  return res.json({}});
 };
