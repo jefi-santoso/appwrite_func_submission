@@ -28,15 +28,15 @@ export default async ({ req, res, log, error }) => {
     log(`Previous Submission: ${JSON.stringify(prevSubmissionHistoryDoc)}`);
 
     log(`Next Status: ${prevSubmissionHistoryDoc.documents[0].new_status}`);
-    // const submissionHistoryDoc = await db.createDocument(body.$databaseId, submissionHistoryCollectionId, ID.unique(),
-    // {
-    //   changed_by_username: 'jsantoso',
-    //   previous_status: prevSubmissionHistoryDoc.documents[0].next_status,
-    //   next_status: body.status,
-    //   changed_at: body.$updatedAt,
-    //   submission: body,
-    // });
-    // log(submissionHistoryDoc);
+    const submissionHistoryDoc = await db.createDocument(body.$databaseId, submissionHistoryCollectionId, ID.unique(),
+    {
+      changed_by_username: 'jsantoso',
+      previous_status: prevSubmissionHistoryDoc.documents[0].new_status,
+      next_status: body.status,
+      changed_at: body.$updatedAt,
+      submission: body,
+    });
+    log(submissionHistoryDoc);
   } catch(err) {
     error(`Error occurred: ${JSON.stringify(err)}`);
   }
