@@ -13,29 +13,33 @@ export default async ({ req, res, log, error }) => {
   try {
     log(client);
     log(req);
+
     const body = req.body;
     const submissionHistoryCollectionId = 'Submission_History';
     log(`Body: ${JSON.stringify(body)}`);
     log(`Database ID: ${body.$databaseId}`);
     log(`Collection ID: ${body.$collectionId}`);
     log(`Document ID: ${body.$id}`);
+
     const prevSubmissionHistoryDoc = await db.listDocuments(body.$databaseId, submissionHistoryCollectionId, [
       Query.equal('submission', body.$id),
       Query.orderDesc("$updatedAt")
     ]);
     log(`Previous Submission: ${JSON.stringify(prevSubmissionHistoryDoc)}`);
-    const submissionHistoryDoc = await db.createDocument(body.$databaseId, submissionHistoryCollectionId, ID.unique(),
-    {
-      changed_by_username: 'jsantoso',
-      previous_status: prevSubmissionHistoryDoc.documents[0].next_status,
-      next_status: body.status,
-      changed_at: body.$updatedAt,
-      submission: body,
-    });
-    log(submissionHistoryDoc);
+
+    log(`Next Status: ${prevSubmissionHistoryDoc.documents[0].next_status}`);
+    // const submissionHistoryDoc = await db.createDocument(body.$databaseId, submissionHistoryCollectionId, ID.unique(),
+    // {
+    //   changed_by_username: 'jsantoso',
+    //   previous_status: prevSubmissionHistoryDoc.documents[0].next_status,
+    //   next_status: body.status,
+    //   changed_at: body.$updatedAt,
+    //   submission: body,
+    // });
+    // log(submissionHistoryDoc);
   } catch(err) {
     error(`Error occurred: ${JSON.stringify(err)}`);
   }
 
-  return res.json({}});
+  return res.json({success: true});
 };
